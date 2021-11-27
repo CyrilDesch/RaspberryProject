@@ -1,0 +1,30 @@
+<MainLayout>:
+    orientation: 'horizontal'
+    AnchorLayout:
+        canvas.before:
+            Color:
+                rgba: rgba(61,63,64,255)
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        size_hint: None,1
+        size: [120, 0]
+        anchor_y: 'center'
+        anchor_x: 'center'
+        List
+    BoxLayout:
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 0.1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        size_hint: 0.004,1
+    AnchorLayout:
+        anchor_y: 'center'
+        anchor_x: 'center'
+        Image:
+            id: imageView
+            source: './Images/test.jpg'
+            size_hint: 1,0.9
+            allow_stretch: True
