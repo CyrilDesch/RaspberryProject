@@ -30,8 +30,8 @@ class Selector(BoxLayout):
         self.add_widget(button)
 
     def selectButton(self, any, touch):
+        print(touch.pos)
         if self.collide_point(*touch.pos):
-            print(touch)
             self.selectedNumberColor[0] = self.nb
         pass
 
