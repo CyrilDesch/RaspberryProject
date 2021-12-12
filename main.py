@@ -15,6 +15,6 @@ class Magicolor(App):
         return MainLayout()
 
 
-Window.fullscreen = True
+Window.fullscreen = 'auto'
 Window.clearcolor = (48 / 255.0, 51 / 255.0, 52 / 255.0, 255 / 255.0)
 Magicolor().run()
