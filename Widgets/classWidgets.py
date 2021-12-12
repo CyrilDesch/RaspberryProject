@@ -26,11 +26,13 @@ class Selector(BoxLayout):
         canvas.add(Color(rgba=color))
         canvas.add(RoundedRectangle(pos=[60, Window.size[1] - 53 - index * 62.5], size=[40, 40], radius=[10, ]))
         button.canvas = canvas
-        button.bind(on_press=self.selectButton)
+        button.bind(on_touch_down=self.selectButton)
         self.add_widget(button)
 
-    def selectButton(self, any):
-        self.selectedNumberColor[0] = self.nb
+    def selectButton(self, any, touch):
+        if self.collide_point(*touch.pos):
+            self.selectedNumberColor[0] = self.nb
+        pass
 
 
 class List(StackLayout):
@@ -101,15 +103,16 @@ class calcul(Button):
         self.text = data.get("calcul")
         self.pos = data.get("pos")
 
-    def on_press(self):
-        if self.selectedNumberColor[0] == self.data.get("result"):
-            for color in listData[0].get("colors"):
-                if color.get("number") == self.data.get("result"):
-                    self.color = color.get("color")
-                    self.selectedNumberColor[1] = self.selectedNumberColor[1] + 1
-        if self.selectedNumberColor[1] == len(listData[0].get("calculLayout")):
-            self.image.source = './Images/0_colored.png'
-
+    def on_touch_down(self, touch):
+        if self.collide_point(*touch.pos):
+            if self.selectedNumberColor[0] == self.data.get("result"):
+                for color in listData[0].get("colors"):
+                    if color.get("number") == self.data.get("result"):
+                        self.color = color.get("color")
+                        self.selectedNumberColor[1] = self.selectedNumberColor[1] + 1
+            if self.selectedNumberColor[1] == len(listData[0].get("calculLayout")):
+                self.image.source = './Images/0_colored.png'
+        pass
     pass
 
 
