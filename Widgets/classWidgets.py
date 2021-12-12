@@ -14,9 +14,10 @@ from kivy.core.window import Window
 # LEFT LAYOUT
 
 class Selector(BoxLayout):
-    def __init__(self, nb, color, index, selectedNumberColor, **kwargs):
+    def __init__(self, nb, color, index, selectedNumberColor, showSelectedColor, **kwargs):
         super(Selector, self).__init__(**kwargs)
         self.selectedNumberColor = selectedNumberColor
+        self.showSelectedColor = showSelectedColor
         self.nb = nb
         self.add_widget(Label(text="[font=montserrat.ttf]" + str(nb) + "  =[/font]", markup=True))
         button = Button(background_color=(0, 0, 0, 0))
@@ -30,10 +31,29 @@ class Selector(BoxLayout):
         self.add_widget(button)
 
     def selectButton(self, any, touche):
-        print(touche)
         if self.collide_point(*touche.pos):
             self.selectedNumberColor[0] = self.nb
+            if self.showSelectedColor[0] is not None:
+                canvas = CanvasBase()
+                canvas.add(Color(1, 1, 1))
+                canvas.add(RoundedRectangle(pos=[58.5, Window.size[1] - 54.5 - 4 * 62.5], size=[43, 43], radius=[11, ]))
+                canvas.add(Color(rgba=listData[0].get("colors")[self.nb - 1].get("color")))
+                canvas.add(RoundedRectangle(pos=[60, Window.size[1] - 53 - 4 * 62.5], size=[40, 40], radius=[10, ]))
+                self.showSelectedColor[0].canvas.clear()
+                self.showSelectedColor[0].canvas.add(canvas)
         pass
+
+
+class ShowSelectedColor(Button):
+    def __init__(self, **kwargs):
+        super(ShowSelectedColor, self).__init__(**kwargs)
+        self.background_color = (0, 0, 0, 0)
+        canvas = CanvasBase()
+        canvas.add(Color(1, 1, 1))
+        canvas.add(RoundedRectangle(pos=[58.5, Window.size[1] - 54.5 - 4 * 62.5], size=[43, 43], radius=[11, ]))
+        canvas.add(Color(rgba=listData[0].get("colors")[0].get("color")))
+        canvas.add(RoundedRectangle(pos=[60, Window.size[1] - 53 - 4 * 62.5], size=[40, 40], radius=[10, ]))
+        self.canvas = canvas
 
 
 class List(StackLayout):
@@ -42,10 +62,13 @@ class List(StackLayout):
         self.size_hint = [0.9, 0.96]
         self.orientation = "tb-lr"
         self.spacing = 12
+        self.showSelectedColor = []
+        self.showSelectedColor.append(ShowSelectedColor())
         index = 0
         for group in listData[0].get("colors"):
-            self.add_widget(Selector(group.get("number"), group.get("color"), index, selectedNumberColor))
+            self.add_widget(Selector(group.get("number"), group.get("color"), index, selectedNumberColor, self.showSelectedColor))
             index += 1
+        self.add_widget(self.showSelectedColor[0])
 
 
 class LeftLayout(AnchorLayout):
@@ -82,6 +105,7 @@ class MainLayout(BoxLayout):
     def __init__(self, **kwargs):
         super(MainLayout, self).__init__(**kwargs)
         self.selectedNumberColor = np.empty(2)
+        self.selectedNumberColor[0] = 1
         self.selectedNumberColor[1] = 0
         self.add_widget(LeftLayout(self.selectedNumberColor), 2)
         self.add_widget(RightLayout(self.selectedNumberColor))
@@ -96,12 +120,13 @@ class calcul(Button):
         self.image = image
         self.selectedNumberColor = selectedNumberColor
         self.data = data
-        self.color = [0.5, 0.5, 0.5, 1]
-        self.size = (50,20)
-        self.font_size = 12
-        self.background_color = [0,0,0,0]
+        self.color = [1, 0, 0, 1]
+        self.size = (50, 20)
+        self.font_size = 11
+        self.background_color = [0, 0, 0, 0]
         self.size_hint = None, None
-        self.text = data.get("calcul")
+        self.markup = True
+        self.text = "[font=montserratbold.ttf]" + data.get("calcul") + "[/font]"
         self.pos = data.get("pos")
 
     def on_touch_down(self, touch):
@@ -109,12 +134,11 @@ class calcul(Button):
             if self.selectedNumberColor[0] == self.data.get("result"):
                 for color in listData[0].get("colors"):
                     if color.get("number") == self.data.get("result"):
-                        self.color = color.get("color")
-                        self.selectedNumberColor[1] = self.selectedNumberColor[1] + 1
+                        if self.color != color.get("color"):
+                            self.color = color.get("color")
+                            self.selectedNumberColor[1] = self.selectedNumberColor[1] + 1
             if self.selectedNumberColor[1] == len(listData[0].get("calculLayout")):
                 self.image.source = './Images/0_colored.png'
         pass
+
     pass
-
-
-
