@@ -16,7 +16,7 @@ class Magicolor(App):
         return MainLayout()
 
 
-Window.size = 700,400
-Window.maximize()
+Window.size = 750,382
+Window.maximise()
 Window.clearcolor = (48/255.0,51/ 255.0,52/ 255.0, 255/ 255.0)
 Magicolor().run()
